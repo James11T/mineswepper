@@ -1,0 +1,85 @@
+.tile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgb(228, 218, 195);
+  width: 35px;
+  height: 35px;
+  font-size: 35px;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: bold;
+  user-select: none;
+
+  --grass: rgb(169, 197, 157);
+  cursor: pointer;
+}
+
+.tile:hover {
+  box-shadow: 0 0 2px 3px rgba(0, 0, 0, 0.2) inset;
+}
+
+.tile:nth-child(2n) {
+  filter: brightness(var(--even-brightness));
+}
+
+.tile:nth-child(2n + 1) {
+  filter: brightness(var(--odd-brightness));
+}
+
+.flag {
+  color: rgb(216, 60, 60);
+  background: var(--grass);
+}
+
+.blank {
+  background: var(--grass);
+}
+
+.tile-number-1 {
+  color: #0400fb;
+}
+
+.tile-number-2 {
+  color: #008103;
+}
+
+.tile-number-3 {
+  color: #fe0102;
+}
+
+.tile-number-4 {
+  color: #010180;
+}
+
+.tile-number-5 {
+  color: #800002;
+}
+
+.tile-number-6 {
+  color: #008080;
+}
+
+.tile-number-7 {
+  color: #000000;
+}
+
+.tile-number-8 {
+  color: #808080;
+}
+
+.mine {
+  position: relative;
+}
+
+.mine::before {
+  content: " ";
+  display: block;
+  width: 80%;
+  height: 80%;
+  background: rgb(44, 44, 44);
+  border-radius: 50%;
+}
+
+.debugMine {
+  border: 2px dashed red;
+}
