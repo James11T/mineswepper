@@ -13,7 +13,7 @@ interface Props {
 }
 
 const Tile = ({ tile, onClick, onRightClick }: Props): JSX.Element => {
-  const pressTime = React.useRef<number | null>(null);
+  const [isPressed, setIsPressed] = React.useState(false);
   const timerId = React.useRef<number | null>(null);
 
   const handleRightClick = (event: React.MouseEvent): void => {
@@ -22,25 +22,23 @@ const Tile = ({ tile, onClick, onRightClick }: Props): JSX.Element => {
   };
 
   const onPressStart = () => {
-    pressTime.current = Date.now();
+    setIsPressed(true);
     timerId.current = window.setTimeout(() => {
       onPressEnd(true);
     }, 300);
   };
 
   const onPressEnd = (isLong = false) => {
-    if (!isLong && !pressTime.current) return;
-
+    if (!isPressed && !isLong) return;
     timerId.current && window.clearTimeout(timerId.current);
-    const pressLength = pressTime.current ? Date.now() - pressTime.current : 0;
 
-    if (isLong || pressLength >= 300) {
+    if (isLong) {
       onRightClick();
     } else {
       onClick();
     }
 
-    pressTime.current = null;
+    setIsPressed(false);
   };
 
   let content: string;
