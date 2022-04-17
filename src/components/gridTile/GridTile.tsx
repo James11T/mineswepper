@@ -8,19 +8,39 @@ const FLAG = "⚑";
 
 interface Props {
   tile: TileType;
-  onClick: (event: React.MouseEvent) => void;
-  onRightClick: (event: React.MouseEvent) => void;
+  onClick: () => void;
+  onRightClick: () => void;
 }
 
 const Tile = ({ tile, onClick, onRightClick }: Props): JSX.Element => {
-  const handleOnClick = (event: React.MouseEvent): void => {
-    event.preventDefault();
-    onClick(event);
-  };
+  const pressTime = React.useRef<number | null>(null);
+  const timerId = React.useRef<number | null>(null);
 
   const handleRightClick = (event: React.MouseEvent): void => {
     event.preventDefault();
-    onRightClick(event);
+    onRightClick();
+  };
+
+  const onPressStart = () => {
+    pressTime.current = Date.now();
+    timerId.current = window.setTimeout(() => {
+      onPressEnd(true);
+    }, 300);
+  };
+
+  const onPressEnd = (isLong = false) => {
+    if (!isLong && !pressTime.current) return;
+
+    timerId.current && window.clearTimeout(timerId.current);
+    const pressLength = pressTime.current ? Date.now() - pressTime.current : 0;
+
+    if (isLong || pressLength >= 300) {
+      onRightClick();
+    } else {
+      onClick();
+    }
+
+    pressTime.current = null;
   };
 
   let content: string;
@@ -50,7 +70,15 @@ const Tile = ({ tile, onClick, onRightClick }: Props): JSX.Element => {
         tile.isMine && tile.isRevealed && styles.mine,
         tile.isMine && DEBUG_ENABLED && styles.debugMine
       )}
-      onClick={handleOnClick}
+      onMouseDown={(event: React.MouseEvent) =>
+        event.button === 0 && onPressStart()
+      }
+      onTouchStart={() => onPressStart()}
+      onMouseUp={(event: React.MouseEvent) =>
+        event.button === 0 && onPressEnd()
+      }
+      onTouchEnd={() => onPressEnd()}
+      onMouseLeave={() => onPressEnd()}
       onContextMenu={handleRightClick}>
       {content}
     </div>
